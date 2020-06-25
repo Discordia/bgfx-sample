@@ -1,36 +1,15 @@
-#include <cstdio>
 #include <SDL.h>
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 #include <SDL_syswm.h>
-#include <fstream>
 #include <bx/math.h>
+
+#include "ShaderProgram.h"
 
 
 SDL_Window* window = nullptr;
 const int WIDTH = 640;
 const int HEIGHT = 480;
-
-bgfx::ShaderHandle loadShader(const char* _name) {
-    char* data = new char[2048];
-    std::ifstream file;
-    size_t fileSize = 0;
-    file.open(_name);
-
-    if(file.is_open()) {
-        file.seekg(0, std::ios::end);
-        fileSize = file.tellg();
-        file.seekg(0, std::ios::beg);
-        file.read(data, fileSize);
-        file.close();
-    }
-
-    const bgfx::Memory* mem = bgfx::copy(data,fileSize+1);
-    mem->data[mem->size-1] = '\0';
-    bgfx::ShaderHandle handle = bgfx::createShader(mem);
-    bgfx::setName(handle, _name);
-    return handle;
-}
 
 struct PosColorVertex {
     float m_x;
@@ -64,7 +43,6 @@ static const uint16_t s_cubeTriList[] = {
 
 bgfx::VertexBufferHandle m_vbh;
 bgfx::IndexBufferHandle m_ibh;
-bgfx::ProgramHandle m_program;
 
 int main (int argc, char* args[]) {
 
@@ -109,12 +87,9 @@ int main (int argc, char* args[]) {
             bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList))
     );
 
-    bgfx::ShaderHandle vsh = loadShader("resources/v_simple.bin");
-    bgfx::ShaderHandle fsh = loadShader("resources/f_simple.bin");
-
-    m_program = bgfx::createProgram(vsh,fsh,  true);
-
-
+    const auto &program = ShaderProgram::create(
+            "resources/v_simple.bin",
+            "resources/f_simple.bin");
 
     // Reset window
     bgfx::reset(WIDTH, HEIGHT, BGFX_RESET_VSYNC);
@@ -186,7 +161,7 @@ int main (int argc, char* args[]) {
             bgfx::setState(BGFX_STATE_DEFAULT);
 
             // Submit primitive for rendering to view 0.
-            bgfx::submit(0, m_program);
+            bgfx::submit(0, program.getHandle());
 
             bgfx::frame();
         }

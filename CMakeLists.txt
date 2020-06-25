@@ -3,7 +3,7 @@ project(bgfx_sample)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(SOURCE_FILES src/main.cpp)
+file(GLOB SOURCE_FILES src/*.cpp)
 
 if(APPLE)
     find_package(SDL2 REQUIRED)
