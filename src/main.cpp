@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <SDL.h>
 #include <SDL_syswm.h>
+#include <bgfx/bgfx.h>
+#include <bgfx/platform.h>
 
 SDL_Window* window = nullptr;
 const int WIDTH = 640;
@@ -25,6 +27,29 @@ int main (int argc, char* args[]) {
         }
     }
 
+    SDL_SysWMinfo wmi;
+    SDL_VERSION(&wmi.version);
+    if (!SDL_GetWindowWMInfo(window, &wmi)) {
+        return 1;
+    }
+
+    bgfx::PlatformData pd;
+    pd.ndt = nullptr;
+    pd.nwh = (void*)(uintptr_t)wmi.info.cocoa.window;
+    bgfx::setPlatformData(pd);
+
+    bgfx::renderFrame();
+    bgfx::init();
+
+    bgfx::reset(WIDTH, HEIGHT, BGFX_RESET_VSYNC);
+    bgfx::setDebug(BGFX_DEBUG_TEXT /*| BGFX_DEBUG_STATS*/);
+
+    bgfx::setViewRect(0, 0, 0, uint16_t(WIDTH), uint16_t(HEIGHT));
+    bgfx::setViewClear(0,
+                       BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
+                       0x443355FF, 1.0f, 0);
+
+    bgfx::touch(0);
 
     // Poll for events and wait till user closes window
     bool quit = false;
@@ -35,11 +60,13 @@ int main (int argc, char* args[]) {
                 quit = true;
             }
         }
+
+        bgfx::frame();
     }
 
-    // Free up window
+    bgfx::shutdown();
+
     SDL_DestroyWindow(window);
-    // Shutdown SDL
     SDL_Quit();
 
     return 0;
