@@ -4,8 +4,9 @@
 #include <SDL_syswm.h>
 #include <bx/math.h>
 
-#include "ShaderProgram.h"
-
+#include <core/ShaderProgram.h>
+#include <core/StreamFactory.h>
+#include <core/desktop/DesktopStreamFactory.h>
 
 SDL_Window* window = nullptr;
 const int WIDTH = 640;
@@ -87,9 +88,8 @@ int main (int argc, char* args[]) {
             bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList))
     );
 
-    const auto &program = ShaderProgram::create(
-            "resources/v_simple.bin",
-            "resources/f_simple.bin");
+    ShaderProgram shaderProgram(shared_ptr<StreamFactory>(new DesktopStreamFactory("resources")));
+    auto programHandle = shaderProgram.loadProgram("v_simple.bin", "f_simple.bin");
 
     // Reset window
     bgfx::reset(WIDTH, HEIGHT, BGFX_RESET_VSYNC);
@@ -161,7 +161,7 @@ int main (int argc, char* args[]) {
             bgfx::setState(BGFX_STATE_DEFAULT);
 
             // Submit primitive for rendering to view 0.
-            bgfx::submit(0, program.getHandle());
+            bgfx::submit(0, programHandle);
 
             bgfx::frame();
         }
