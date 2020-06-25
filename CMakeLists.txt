@@ -9,11 +9,9 @@ if(APPLE)
     find_package(SDL2 REQUIRED)
     include_directories(${SDL2_INCLUDE_DIRS})
 
-    include_directories(/Users/robertsjodahl/projecets/bgfx-repos/bgfx/include)
-    include_directories(/Users/robertsjodahl/projecets/bgfx-repos/bimg/include)
-    include_directories(/Users/robertsjodahl/projecets/bgfx-repos/bx/include)
+    include_directories(/usr/local/bgfx/include)
 
-    file(GLOB BGFX_SHARED_LIBRARY /Users/robertsjodahl/projecets/bgfx-repos/bgfx/.build/osx64_clang/bin/libbgfx-shared-libRelease.dylib)
+    file(GLOB BGFX_SHARED_LIBRARY /usr/local/bgfx/libbgfx-shared-libRelease.dylib)
 
     add_executable(bgfx_sample ${SOURCE_FILES})
     target_link_libraries(bgfx_sample ${BGFX_SHARED_LIBRARY} ${SDL2_LIBRARIES})
