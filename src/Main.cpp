@@ -7,43 +7,11 @@
 #include <core/ShaderProgram.h>
 #include <core/StreamFactory.h>
 #include <core/desktop/DesktopStreamFactory.h>
+#include "ColorCube.h"
 
 SDL_Window* window = nullptr;
 const int WIDTH = 640;
 const int HEIGHT = 480;
-
-struct PosColorVertex {
-    float m_x;
-    float m_y;
-    float m_z;
-    uint32_t m_abgr;
-
-    static void init() {
-        ms_layout
-                .begin()
-                .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-                .add(bgfx::Attrib::Color0,   4, bgfx::AttribType::Uint8, true)
-                .end();
-    };
-
-    static bgfx::VertexLayout ms_layout;
-};
-
-
-bgfx::VertexLayout PosColorVertex::ms_layout;
-
-static PosColorVertex s_cubeVertices[] = {
-                {  0.5f,  0.5f, 0.0f, 0xff0000ff },
-                {  0.5f, -0.5f, 0.0f, 0xff0000ff },
-                { -0.5f, -0.5f, 0.0f, 0xff00ff00 },
-                { -0.5f,  0.5f, 0.0f, 0xff00ff00 }};
-
-static const uint16_t s_cubeTriList[] = {
-                0,1,3,
-                1,2,3};
-
-bgfx::VertexBufferHandle m_vbh;
-bgfx::IndexBufferHandle m_ibh;
 
 int main (int argc, char* args[]) {
 
@@ -78,15 +46,7 @@ int main (int argc, char* args[]) {
     bgfx::renderFrame();
     bgfx::init();
 
-    PosColorVertex::init();
-    m_vbh = bgfx::createVertexBuffer(
-            bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices)),
-            PosColorVertex::ms_layout
-    );
-
-    m_ibh = bgfx::createIndexBuffer(
-            bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList))
-    );
+    ColorCube colorCube;
 
     ShaderProgram shaderProgram(shared_ptr<StreamFactory>(new DesktopStreamFactory("resources")));
     auto programHandle = shaderProgram.loadProgram("v_simple.bin", "f_simple.bin");
@@ -154,8 +114,8 @@ int main (int argc, char* args[]) {
             bgfx::setTransform(mtx);
 
             // Set vertex and index buffer.
-            bgfx::setVertexBuffer(0, m_vbh);
-            bgfx::setIndexBuffer(m_ibh);
+            bgfx::setVertexBuffer(0, colorCube.getVertexBuffer());
+            bgfx::setIndexBuffer(colorCube.getIndexBuffer());
 
             // Set render states.
             bgfx::setState(BGFX_STATE_DEFAULT);
