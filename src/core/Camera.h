@@ -19,9 +19,9 @@ public:
 
     void setProjection(float fovy, float near, float far) {
         bx::mtxProj(projection,
-                    60.0f,
+                    fovy,
                     float(width)/float(height),
-                    0.1f, 100.0f,
+                    near, far,
                     bgfx::getCaps()->homogeneousDepth);
     }
 

@@ -7,20 +7,8 @@ struct PosColorVertex {
     float y;
     float z;
     uint32_t abgr;
-
-    static void init() {
-        vertexLayout
-                .begin()
-                .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-                .add(bgfx::Attrib::Color0,   4, bgfx::AttribType::Uint8, true)
-                .end();
-    };
-
-    static bgfx::VertexLayout vertexLayout;
 };
 
-
-bgfx::VertexLayout PosColorVertex::vertexLayout;
 
 static PosColorVertex cubeVertices[] = {
         {  0.5f,  0.5f, 0.0f, 0xff0000ff },
@@ -37,10 +25,16 @@ static const uint16_t cubeIndices[] = {
 class ColorCube {
 public:
     ColorCube() {
-        PosColorVertex::init();
+        bgfx::VertexLayout vertexLayout;
+        vertexLayout
+                .begin()
+                .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+                .add(bgfx::Attrib::Color0,   4, bgfx::AttribType::Uint8, true)
+                .end();
+
         vertexBuffer = bgfx::createVertexBuffer(
                 bgfx::makeRef(cubeVertices, sizeof(cubeVertices)),
-                PosColorVertex::vertexLayout
+                vertexLayout
         );
 
         indexBuffer = bgfx::createIndexBuffer(
