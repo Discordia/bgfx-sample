@@ -4,7 +4,25 @@
 #include <core/desktop/DesktopStreamFactory.h>
 #include <core/desktop/InputHandler.h>
 #include <core/Camera.h>
-#include "ColorCube.h"
+
+struct PosColorVertex {
+    float x;
+    float y;
+    float z;
+    uint32_t abgr;
+};
+
+
+static PosColorVertex cubeVertices[] = {
+        {  0.5f,  0.5f, 0.0f, 0xff0000ff },
+        {  0.5f, -0.5f, 0.0f, 0xff0000ff },
+        { -0.5f, -0.5f, 0.0f, 0xff0000ff },
+        { -0.5f,  0.5f, 0.0f, 0xff0000ff }};
+
+static const uint16_t cubeIndices[] = {
+        0,1,3,
+        1,2,3};
+
 
 int main () {
     int32_t width = 640;
@@ -12,16 +30,15 @@ int main () {
     BGFXWindow window("BGFX sample", width, height);
     window.init();
 
-    ColorCube colorCube;
-    bgfx::DynamicVertexBufferHandle vertexBuffer = bgfx::createDynamicVertexBuffer(
-            bgfx::makeRef(cubeVertices, sizeof(cubeVertices)),
-            colorCube.getVertexLayout()
-    );
+    bgfx::VertexLayout vertexLayout;
+    vertexLayout
+            .begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Color0,   4, bgfx::AttribType::Uint8, true)
+            .end();
 
-    bgfx::DynamicIndexBufferHandle indexBuffer = bgfx::createDynamicIndexBuffer(
-            bgfx::makeRef(cubeIndices, sizeof(cubeIndices))
-    );
-
+    bgfx::DynamicVertexBufferHandle vertexBuffer = bgfx::createDynamicVertexBuffer(8, vertexLayout);
+    bgfx::DynamicIndexBufferHandle indexBuffer = bgfx::createDynamicIndexBuffer(12);
 
     ShaderProgram shaderProgram(shared_ptr<StreamFactory>(new DesktopStreamFactory("out/osx")));
     auto programHandle = shaderProgram.loadProgram("v_simple.bin", "f_simple.bin");
@@ -44,6 +61,10 @@ int main () {
 
         bgfx::setVertexBuffer(0, vertexBuffer);
         bgfx::setIndexBuffer(indexBuffer);
+
+        bgfx::update(vertexBuffer, 0, bgfx::makeRef(cubeVertices, sizeof(cubeVertices)));
+        bgfx::update(indexBuffer, 0, bgfx::makeRef(cubeIndices, sizeof(cubeIndices)));
+
         bgfx::submit(0, programHandle);
         bgfx::frame();
     }
