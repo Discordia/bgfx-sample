@@ -27,14 +27,14 @@ void Renderer::init(int32_t width, int32_t height) {
     camera.update();
 }
 
-void Renderer:: beginFrame() {
+void Renderer::beginFrame() {
     bgfx::setVertexBuffer(0, vertexBuffer0);
     bgfx::setIndexBuffer(indexBuffer0);
 }
 
-void Renderer::draw(const RenderMemory *vertices, const RenderMemory *indices) {
-    bgfx::update(vertexBuffer0, 0, bgfx::makeRef(vertices->data, vertices->size));
-    bgfx::update(indexBuffer0, 0, bgfx::makeRef(indices->data, indices->size));
+void Renderer::draw(RenderChunk(& renderChunk)) {
+    bgfx::update(vertexBuffer0, 0, renderChunk.getVerticesAsRef());
+    bgfx::update(indexBuffer0, 0, renderChunk.getIndicesAsRef());
 
     bgfx::submit(0, programHandle);
 }

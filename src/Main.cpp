@@ -2,13 +2,6 @@
 #include <core/desktop/InputHandler.h>
 #include <core/Renderer.h>
 
-struct PosColorVertex {
-    float x;
-    float y;
-    float z;
-    uint32_t abgr;
-};
-
 static PosColorVertex cubeVertices[] = {
         {  0.5f,  0.5f, 0.0f, 0xff0000ff },
         {  0.5f, -0.5f, 0.0f, 0xff0000ff },
@@ -32,15 +25,16 @@ int main () {
     bool running = true;
     InputHandler inputHandler;
 
-    const RenderMemory *vertices = new RenderMemory(cubeVertices, sizeof(cubeVertices));
-    const RenderMemory *indices = new RenderMemory(cubeIndices, sizeof(cubeIndices));
+    RenderChunk chunk = RenderChunk::create(
+            cubeVertices, sizeof(cubeVertices),
+            cubeIndices, sizeof(cubeIndices));
 
     while(running) {
         inputHandler.poll();
         running = !inputHandler.exitRequested();
 
         renderer.beginFrame();
-        renderer.draw(vertices, indices);
+        renderer.draw(chunk);
         renderer.endFrame();
     }
 
