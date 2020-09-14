@@ -6,13 +6,23 @@
 #include <core/Camera.h>
 #include "ColorCube.h"
 
-int main (int argc, char* args[]) {
+int main () {
     int32_t width = 640;
     int32_t height = 480;
     BGFXWindow window("BGFX sample", width, height);
     window.init();
 
     ColorCube colorCube;
+    bgfx::DynamicVertexBufferHandle vertexBuffer = bgfx::createDynamicVertexBuffer(
+            bgfx::makeRef(cubeVertices, sizeof(cubeVertices)),
+            colorCube.getVertexLayout()
+    );
+
+    bgfx::DynamicIndexBufferHandle indexBuffer = bgfx::createDynamicIndexBuffer(
+            bgfx::makeRef(cubeIndices, sizeof(cubeIndices))
+    );
+
+
     ShaderProgram shaderProgram(shared_ptr<StreamFactory>(new DesktopStreamFactory("out/osx")));
     auto programHandle = shaderProgram.loadProgram("v_simple.bin", "f_simple.bin");
 
@@ -27,12 +37,13 @@ int main (int argc, char* args[]) {
     // Poll for events and wait till user closes window
     bool running = true;
     InputHandler inputHandler;
+
     while(running) {
         inputHandler.poll();
         running = !inputHandler.exitRequested();
 
-        bgfx::setVertexBuffer(0, colorCube.getVertexBuffer());
-        bgfx::setIndexBuffer(colorCube.getIndexBuffer());
+        bgfx::setVertexBuffer(0, vertexBuffer);
+        bgfx::setIndexBuffer(indexBuffer);
         bgfx::submit(0, programHandle);
         bgfx::frame();
     }
