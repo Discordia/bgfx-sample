@@ -1,6 +1,5 @@
 #include <core/Renderer.h>
 #include <core/StreamFactory.h>
-#include <core/ShaderProgram.h>
 #include <core/Camera.h>
 
 Renderer::Renderer(shared_ptr<StreamFactory> streamFactory)
@@ -17,8 +16,8 @@ void Renderer::init(int32_t width, int32_t height) {
     this->vertexBuffer0 = bgfx::createDynamicVertexBuffer(8, vertexLayout);
     this->indexBuffer0 = bgfx::createDynamicIndexBuffer(12);
 
-    ShaderProgram shaderProgram(streamFactory);
-    this->programHandle = shaderProgram.loadProgram("v_simple.bin", "f_simple.bin");
+
+    this->shaderProgram = ShaderProgram::load(streamFactory, "v_simple.bin", "f_simple.bin");
 
     Camera camera(width, height);
 
@@ -38,7 +37,7 @@ void Renderer::draw(RenderChunk(& renderChunk)) {
     bgfx::update(vertexBuffer0, 0, renderChunk.getVerticesAsRef());
     bgfx::update(indexBuffer0, 0, renderChunk.getIndicesAsRef());
 
-    bgfx::submit(0, programHandle);
+    shaderProgram->submit();
 }
 
 void Renderer::endFrame() {

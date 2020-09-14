@@ -3,8 +3,11 @@
 #include <memory>
 #include <bgfx/bgfx.h>
 #include <core/RenderChunk.h>
+#include <core/ShaderProgram.h>
 
 class StreamFactory;
+
+using std::unique_ptr;
 using std::shared_ptr;
 
 struct PosColorVertex {
@@ -26,7 +29,7 @@ public:
 
 private:
     shared_ptr<StreamFactory> streamFactory;
-    bgfx::ProgramHandle programHandle{};
+    unique_ptr<ShaderProgram> shaderProgram;
     bgfx::DynamicVertexBufferHandle vertexBuffer0{};
     bgfx::DynamicIndexBufferHandle indexBuffer0{};
 };
