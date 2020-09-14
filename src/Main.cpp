@@ -1,6 +1,7 @@
 #include <core/desktop/BGFXWindow.h>
 #include <core/desktop/InputHandler.h>
 #include <core/Renderer.h>
+#include <core/desktop/DesktopStreamFactory.h>
 
 static PosColorVertex cubeVertices[] = {
         {  0.5f,  0.5f, 0.0f, 0xff0000ff },
@@ -18,7 +19,7 @@ int main () {
     BGFXWindow window("BGFX sample", width, height);
     window.init();
 
-    Renderer renderer{};
+    Renderer renderer(shared_ptr<StreamFactory>(new DesktopStreamFactory("out/osx")));
     renderer.init(width, height);
 
     // Poll for events and wait till user closes window

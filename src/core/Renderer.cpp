@@ -1,8 +1,10 @@
 #include <core/Renderer.h>
-#include <core/ShaderProgram.h>
 #include <core/StreamFactory.h>
-#include <core/desktop/DesktopStreamFactory.h>
+#include <core/ShaderProgram.h>
 #include <core/Camera.h>
+
+Renderer::Renderer(shared_ptr<StreamFactory> streamFactory)
+    : streamFactory(std::move(streamFactory)) {}
 
 void Renderer::init(int32_t width, int32_t height) {
     bgfx::VertexLayout vertexLayout;
@@ -15,7 +17,7 @@ void Renderer::init(int32_t width, int32_t height) {
     this->vertexBuffer0 = bgfx::createDynamicVertexBuffer(8, vertexLayout);
     this->indexBuffer0 = bgfx::createDynamicIndexBuffer(12);
 
-    ShaderProgram shaderProgram(shared_ptr<StreamFactory>(new DesktopStreamFactory("out/osx")));
+    ShaderProgram shaderProgram(streamFactory);
     this->programHandle = shaderProgram.loadProgram("v_simple.bin", "f_simple.bin");
 
     Camera camera(width, height);
