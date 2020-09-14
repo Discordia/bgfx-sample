@@ -1,5 +1,10 @@
 #pragma once
 
+#include <memory>
+
+using std::shared_ptr;
+using std::make_shared;
+
 struct RenderData {
     uint8_t *data;
     uint32_t size;
@@ -14,11 +19,9 @@ struct RenderData {
 
 class RenderChunk {
 public:
-    static RenderChunk create(const void *vertices, uint32_t verticesSize, const void *indices, uint32_t indicesSize) {
-        return RenderChunk(
-                RenderData::make(vertices, verticesSize),
-                RenderData::make(indices, indicesSize)
-        );
+    RenderChunk(const RenderData *vertices, const RenderData *indices) {
+        this->vertices = vertices;
+        this->indices = indices;
     }
 
     ~RenderChunk() {
@@ -33,6 +36,14 @@ public:
         }
     }
 
+    static shared_ptr<RenderChunk> create(
+            const void *vertices, uint32_t verticesSize,
+            const void *indices, uint32_t indicesSize) {
+        return std::make_shared<RenderChunk>(
+                RenderData::make(vertices, verticesSize),
+                RenderData::make(indices, indicesSize));
+    }
+
     const RenderData *getVertices() { return vertices; }
     const bgfx::Memory *getVerticesAsRef() { return bgfx::makeRef(vertices->data, vertices->size); }
 
@@ -40,11 +51,6 @@ public:
     const bgfx::Memory *getIndicesAsRef() { return bgfx::makeRef(indices->data, indices->size); }
 
 private:
-    RenderChunk(const RenderData *vertices, const RenderData *indices) {
-        this->vertices = vertices;
-        this->indices = indices;
-    }
-
     const RenderData *vertices;
     const RenderData *indices;
 };

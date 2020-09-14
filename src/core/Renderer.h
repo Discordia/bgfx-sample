@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 #include <bgfx/bgfx.h>
 #include <core/RenderChunk.h>
 #include <core/ShaderProgram.h>
@@ -11,6 +12,7 @@ class StreamFactory;
 
 using std::unique_ptr;
 using std::shared_ptr;
+using std::vector;
 
 struct PosColorVertex {
     float x;
@@ -26,7 +28,7 @@ public:
 
     void init(int32_t width, int32_t height);
     void beginFrame();
-    void draw(RenderChunk& renderChunk);
+    void draw(const shared_ptr<RenderChunk>& renderChunk);
     void endFrame();
 
 private:

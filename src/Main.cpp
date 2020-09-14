@@ -19,6 +19,7 @@ int main () {
     BGFXWindow window("BGFX sample", width, height);
     window.init();
 
+    vector<RenderChunk> renderQueue;
     Renderer renderer(shared_ptr<StreamFactory>(new DesktopStreamFactory("out/osx")));
     renderer.init(width, height);
 
@@ -26,7 +27,7 @@ int main () {
     bool running = true;
     InputHandler inputHandler;
 
-    RenderChunk chunk = RenderChunk::create(
+    auto chunk = RenderChunk::create(
             cubeVertices, sizeof(cubeVertices),
             cubeIndices, sizeof(cubeIndices));
 

@@ -27,9 +27,9 @@ void Renderer::beginFrame() {
     indexBuffer->bind();
 }
 
-void Renderer::draw(RenderChunk& renderChunk) {
-    vertexBuffer->update(0, renderChunk.getVerticesAsRef());
-    indexBuffer->update(0, renderChunk.getIndicesAsRef());
+void Renderer::draw(const shared_ptr<RenderChunk>& renderChunk) {
+    vertexBuffer->update(0, renderChunk->getVerticesAsRef());
+    indexBuffer->update(0, renderChunk->getIndicesAsRef());
 
     shaderProgram->submit();
 }
@@ -37,5 +37,4 @@ void Renderer::draw(RenderChunk& renderChunk) {
 void Renderer::endFrame() {
     bgfx::frame();
 }
-
 
