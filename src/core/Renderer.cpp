@@ -13,8 +13,8 @@ void Renderer::init(int32_t width, int32_t height) {
             .add(bgfx::Attrib::Color0,   4, bgfx::AttribType::Uint8, true)
             .end();
 
-    this->vertexBuffer0 = bgfx::createDynamicVertexBuffer(8, vertexLayout);
-    this->indexBuffer0 = bgfx::createDynamicIndexBuffer(12);
+    this->vertexBuffer = std::make_unique<VertexBuffer>(8, vertexLayout);
+    this->indexBuffer = std::make_unique<IndexBuffer>(12);
 
 
     this->shaderProgram = ShaderProgram::load(streamFactory, "v_simple.bin", "f_simple.bin");
@@ -29,13 +29,13 @@ void Renderer::init(int32_t width, int32_t height) {
 }
 
 void Renderer::beginFrame() {
-    bgfx::setVertexBuffer(0, vertexBuffer0);
-    bgfx::setIndexBuffer(indexBuffer0);
+    vertexBuffer->bind();
+    indexBuffer->bind();
 }
 
-void Renderer::draw(RenderChunk(& renderChunk)) {
-    bgfx::update(vertexBuffer0, 0, renderChunk.getVerticesAsRef());
-    bgfx::update(indexBuffer0, 0, renderChunk.getIndicesAsRef());
+void Renderer::draw(RenderChunk& renderChunk) {
+    vertexBuffer->update(0, renderChunk.getVerticesAsRef());
+    indexBuffer->update(0, renderChunk.getIndicesAsRef());
 
     shaderProgram->submit();
 }

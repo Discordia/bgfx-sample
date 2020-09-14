@@ -4,6 +4,8 @@
 #include <bgfx/bgfx.h>
 #include <core/RenderChunk.h>
 #include <core/ShaderProgram.h>
+#include <core/VertexBuffer.h>
+#include <core/IndexBuffer.h>
 
 class StreamFactory;
 
@@ -30,6 +32,6 @@ public:
 private:
     shared_ptr<StreamFactory> streamFactory;
     unique_ptr<ShaderProgram> shaderProgram;
-    bgfx::DynamicVertexBufferHandle vertexBuffer0{};
-    bgfx::DynamicIndexBufferHandle indexBuffer0{};
+    unique_ptr<VertexBuffer> vertexBuffer;
+    unique_ptr<IndexBuffer> indexBuffer;
 };
