@@ -2,7 +2,7 @@
 
 VertexBuffer::VertexBuffer(uint32_t size, VertexType vertexType) {
     bgfx::VertexLayout vertexLayout = createVertexLayout(vertexType);
-    this->vertexBufferHandle = bgfx::createDynamicVertexBuffer(8, vertexLayout);
+    this->vertexBufferHandle = bgfx::createDynamicVertexBuffer(size, vertexLayout);
 }
 
 void VertexBuffer::bind() {

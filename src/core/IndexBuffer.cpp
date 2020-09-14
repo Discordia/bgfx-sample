@@ -1,7 +1,7 @@
 #include <core/IndexBuffer.h>
 
 IndexBuffer::IndexBuffer(uint32_t size) {
-    indexBufferHandle = bgfx::createDynamicIndexBuffer(12);
+    indexBufferHandle = bgfx::createDynamicIndexBuffer(size);
 }
 
 void IndexBuffer::bind() {
