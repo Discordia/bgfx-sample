@@ -8,7 +8,7 @@ public:
     VertexBuffer(uint32_t size, VertexType vertexType);
     ~VertexBuffer() = default;
 
-    void bind();
+    void bind(uint8_t stream, uint32_t startVertex, uint32_t vertexCount);
     void update(uint32_t startVertex, const bgfx::Memory *data);
 
 private:

@@ -2,11 +2,11 @@
 
 VertexBuffer::VertexBuffer(uint32_t size, VertexType vertexType) {
     bgfx::VertexLayout vertexLayout = createVertexLayout(vertexType);
-    this->vertexBufferHandle = bgfx::createDynamicVertexBuffer(size, vertexLayout);
+    this->vertexBufferHandle = bgfx::createDynamicVertexBuffer(size, vertexLayout, BGFX_BUFFER_ALLOW_RESIZE);
 }
 
-void VertexBuffer::bind() {
-    bgfx::setVertexBuffer(0, vertexBufferHandle);
+void VertexBuffer::bind(uint8_t stream, uint32_t startVertex, uint32_t vertexCount) {
+    bgfx::setVertexBuffer(stream, vertexBufferHandle, startVertex, vertexCount);
 }
 
 void VertexBuffer::update(uint32_t startVertex, const bgfx::Memory *data) {

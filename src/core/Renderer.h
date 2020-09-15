@@ -23,16 +23,17 @@ struct PosColorVertex {
 
 class Renderer {
 public:
-    explicit Renderer(shared_ptr<StreamFactory>);
+    Renderer(shared_ptr<StreamFactory> streamFactory, vector<shared_ptr<RenderChunk>>& renderQueue);
     ~Renderer() = default;
 
     void init(int32_t width, int32_t height);
     void beginFrame();
-    void draw(const shared_ptr<RenderChunk>& renderChunk);
+    void drawFrame();
     void endFrame();
 
 private:
     shared_ptr<StreamFactory> streamFactory;
+    vector<shared_ptr<RenderChunk>>& renderQueue;
     unique_ptr<ShaderProgram> shaderProgram;
     unique_ptr<VertexBuffer> vertexBuffer;
     unique_ptr<IndexBuffer> indexBuffer;
