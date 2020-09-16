@@ -37,4 +37,5 @@ private:
     unique_ptr<ShaderProgram> shaderProgram;
     unique_ptr<VertexBuffer> vertexBuffer;
     unique_ptr<IndexBuffer> indexBuffer;
+    bool cached;
 };

@@ -2,6 +2,7 @@
 #include <core/desktop/InputHandler.h>
 #include <core/Renderer.h>
 #include <core/desktop/DesktopStreamFactory.h>
+#include <iostream>
 
 static PosColorVertex cubeVertices[] = {
         {  0.5f,  2.5f, 0.0f, 0xff0000ff },
@@ -15,28 +16,11 @@ static PosColorVertex cubeVertices2[] = {
         { -1.5f, -2.5f, 0.0f, 0xff00ff00 },
         { -1.5f,  -1.5f, 0.0f, 0xff00ff00 }};
 
-static const uint16_t cubeIndices[] = {
+static const uint32_t cubeIndices[] = {
         0,1,3,
         1,2,3};
 
-static const uint16_t cubeIndices2[] = {
-        4,5,7,
-        5,6,7};
-
-
-static PosColorVertex cubeVertices3[] = {
-        {  0.5f,  2.5f, 0.0f, 0xff0000ff },
-        {  0.5f,  1.5f, 0.0f, 0xff0000ff },
-        { -0.5f,  1.5f, 0.0f, 0xff0000ff },
-        { -0.5f,  2.5f, 0.0f, 0xff0000ff },
-        {  1.5f,  -1.5f, 0.0f, 0xff00ff00 },
-        {  1.5f, -2.5f, 0.0f, 0xff00ff00 },
-        { -1.5f, -2.5f, 0.0f, 0xff00ff00 },
-        { -1.5f,  -1.5f, 0.0f, 0xff00ff00 }};
-
-static const uint16_t cubeIndices3[] = {
-        0,1,3,
-        1,2,3,
+static const uint32_t cubeIndices2[] = {
         4,5,7,
         5,6,7};
 
@@ -55,19 +39,14 @@ int main () {
     InputHandler inputHandler;
 
     auto chunk1 = GeometryChunk::create(
-            cubeVertices, sizeof(cubeVertices),
-            cubeIndices, sizeof(cubeIndices));
+            cubeVertices, sizeof(cubeVertices), 4,
+            cubeIndices, sizeof(cubeIndices), 6);
     auto renderChunk1 = RenderChunk::forGeometry(chunk1);
 
     auto chunk2 = GeometryChunk::create(
-            cubeVertices2, sizeof(cubeVertices2),
-            cubeIndices2, sizeof(cubeIndices2));
+            cubeVertices2, sizeof(cubeVertices2), 4,
+            cubeIndices2, sizeof(cubeIndices2), 6);
     auto renderChunk2 = RenderChunk::forGeometry(chunk2);
-
-    auto chunk3 = GeometryChunk::create(
-            cubeVertices3, sizeof(cubeVertices3),
-            cubeIndices3, sizeof(cubeIndices3));
-    auto renderChunk3 = RenderChunk::forGeometry(chunk3);
 
     while(running) {
         inputHandler.poll();
@@ -77,8 +56,6 @@ int main () {
         renderQueue.push_back(renderChunk1);
         renderQueue.push_back(renderChunk2);
 
-        // Render this instead of the two render chunks above to have a working exmaple
-        // renderQueue.push_back(renderChunk3);
         renderer.drawFrame();
         renderer.endFrame();
     }

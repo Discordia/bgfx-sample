@@ -17,7 +17,7 @@ if(APPLE)
 
     add_executable(bgfx_sample ${SOURCE_FILES})
     target_link_libraries(bgfx_sample ${BGFX_SHARED_LIBRARY} ${SDL2_LIBRARIES})
-    target_link_libraries(bgfx_sample "-framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo")
+    target_link_libraries(bgfx_sample "-framework Metal -framework MetalKit -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo")
 else()
     find_package(PkgConfig REQUIRED)
     pkg_search_module(SDL2 REQUIRED SDL2)

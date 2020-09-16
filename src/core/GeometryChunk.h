@@ -20,9 +20,15 @@ struct GeoemtryData {
 
 class GeometryChunk {
 public:
-    GeometryChunk(const GeoemtryData *vertices, const GeoemtryData *indices) {
+    GeometryChunk(
+            const GeoemtryData *vertices,
+            uint32_t vertexCount,
+            const GeoemtryData *indices,
+            uint32_t indexCount) {
         this->vertices = vertices;
+        this->vertexCount = vertexCount;
         this->indices = indices;
+        this->indexCount = indexCount;
     }
 
     ~GeometryChunk() {
@@ -37,21 +43,26 @@ public:
         }
     }
 
-    static shared_ptr<GeometryChunk> create(
+    static shared_ptr<GeometryChunk>    create(
             const void *vertices, uint32_t verticesSize,
-            const void *indices, uint32_t indicesSize) {
+            uint32_t vertexCount,
+            const void *indices, uint32_t indicesSize,
+            uint32_t indexCount) {
         return std::make_shared<GeometryChunk>(
                 GeoemtryData::make(vertices, verticesSize),
-                GeoemtryData::make(indices, indicesSize));
+                vertexCount,
+                GeoemtryData::make(indices, indicesSize),
+                indexCount);
     }
 
-    const GeoemtryData *getVertices() { return vertices; }
     const bgfx::Memory *getVerticesAsRef() { return bgfx::makeRef(vertices->data, vertices->size); }
-
-    const GeoemtryData *getIndices() { return indices; }
+    uint32_t getVertexCount() { return vertexCount; }
     const bgfx::Memory *getIndicesAsRef() { return bgfx::makeRef(indices->data, indices->size); }
+    uint32_t getIndexCount() { return indexCount; }
 
 private:
     const GeoemtryData *vertices;
+    uint32_t vertexCount;
     const GeoemtryData *indices;
+    uint32_t indexCount;
 };

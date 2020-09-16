@@ -3,7 +3,7 @@
 #include <core/Camera.h>
 
 Renderer::Renderer(shared_ptr<StreamFactory> streamFactory, vector<shared_ptr<RenderChunk>> &renderQueue)
-        : streamFactory(std::move(streamFactory)), renderQueue(renderQueue) {}
+        : streamFactory(std::move(streamFactory)), renderQueue(renderQueue), cached(false) {}
 
 void Renderer::init(int32_t width, int32_t height) {
     // Camera setup
@@ -28,15 +28,18 @@ void Renderer::beginFrame() {
 void Renderer::drawFrame() {
     uint32_t vertexOffset = 0;
     uint32_t indexOffset = 0;
-    uint32_t vertexCount = 4;  // set from vertices
-    uint32_t drawCount = 6;    // set from indices
 
-    for (const auto &chunk : renderQueue) {
-        vertexBuffer->update(vertexOffset, chunk->getGeometry()->getVerticesAsRef());
-        indexBuffer->update(indexOffset, chunk->getGeometry()->getIndicesAsRef());
+    if (!cached) {
+        for (const auto &chunk : renderQueue) {
+            auto geometry = chunk->getGeometry();
+            vertexBuffer->update(vertexOffset, geometry->getVerticesAsRef());
+            indexBuffer->update(indexOffset, geometry->getIndicesAsRef());
 
-        vertexOffset += vertexCount;
-        indexOffset += drawCount;
+            vertexOffset += geometry->getVertexCount();
+            indexOffset += geometry->getIndexCount();
+        }
+
+        cached = true;
     }
 
     vertexBuffer->bind(0, 0, 8);
