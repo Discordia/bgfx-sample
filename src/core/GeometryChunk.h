@@ -6,12 +6,12 @@
 using std::shared_ptr;
 using std::make_shared;
 
-struct GeoemtryData {
+struct GeometryData {
     uint8_t *data;
     uint32_t size;
 
-    static GeoemtryData *make(const void *data, uint32_t size) {
-        auto *renderData = new GeoemtryData();
+    static GeometryData *make(const void *data, uint32_t size) {
+        auto *renderData = new GeometryData();
         renderData->data = (uint8_t *) data;
         renderData->size = size;
         return renderData;
@@ -21,9 +21,9 @@ struct GeoemtryData {
 class GeometryChunk {
 public:
     GeometryChunk(
-            const GeoemtryData *vertices,
+            const GeometryData *vertices,
             uint32_t vertexCount,
-            const GeoemtryData *indices,
+            const GeometryData *indices,
             uint32_t indexCount) {
         this->vertices = vertices;
         this->vertexCount = vertexCount;
@@ -49,9 +49,9 @@ public:
             const void *indices, uint32_t indicesSize,
             uint32_t indexCount) {
         return std::make_shared<GeometryChunk>(
-                GeoemtryData::make(vertices, verticesSize),
+                GeometryData::make(vertices, verticesSize),
                 vertexCount,
-                GeoemtryData::make(indices, indicesSize),
+                GeometryData::make(indices, indicesSize),
                 indexCount);
     }
 
@@ -61,8 +61,8 @@ public:
     uint32_t getIndexCount() { return indexCount; }
 
 private:
-    const GeoemtryData *vertices;
+    const GeometryData *vertices;
     uint32_t vertexCount;
-    const GeoemtryData *indices;
+    const GeometryData *indices;
     uint32_t indexCount;
 };
